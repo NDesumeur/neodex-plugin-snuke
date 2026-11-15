@@ -54,3 +54,11 @@ Records and statistics are stored by NeoDex, backed up and synced between your P
 In NeoDex: **NeoStore → Discover → Snuke → Install**.
 
 Building a plugin: see the [NeoDex SDK](https://github.com/NDesumeur/neodex-sdk).
+
+## New style and full screen
+
+- **The style of the recent games**: pixel art frames and buttons, a pixel font, a checkered meadow with tufts of grass.
+- **The snake, drawn**: a continuous body with scales and an outline, a thinner tail, a head whose eyes look where it goes, a forked tongue, and crossed-out eyes when you lose.
+- **Fruits and walls**: each fruit has its own shape (apple, cherry, orange…), the labyrinth walls are made of stone.
+- **Records panel**: the record of each mode, games played, fruits eaten and the longest snake.
+- **Full screen**: "FULL SCREEN" button. The game also grows with the window.

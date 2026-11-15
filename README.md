@@ -54,3 +54,11 @@ Records et statistiques sont enregistrés par NeoDex, sauvegardés et synchronis
 Dans NeoDex : **NeoStore → À découvrir → Snuke → Installer**.
 
 Développer un plugin : voir le [SDK NeoDex](https://github.com/NDesumeur/neodex-sdk).
+
+## Nouveau style et plein écran
+
+- **Le style des jeux récents** : cadres et boutons en pixel art, police pixel, un pré en damier avec ses touffes d'herbe.
+- **Le serpent dessiné** : un corps continu avec ses écailles et un contour, une queue plus fine, une tête avec des yeux qui regardent où il va, une langue fourchue, et des yeux en croix quand c'est perdu.
+- **Les fruits et les murs** : chaque fruit a sa forme (pomme, cerise, orange…), les murs du labyrinthe sont en pierre.
+- **Panneau des records** : le record de chaque mode, les parties, les fruits mangés et le plus long serpent.
+- **Plein écran** : bouton « PLEIN ÉCRAN ». Le jeu grandit aussi avec la fenêtre.
