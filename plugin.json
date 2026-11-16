@@ -1,7 +1,7 @@
 {
   "id": "neodex.snuke",
   "name": "Snuke",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "NDesumeur",
   "description": "Le jeu du serpent sur 24 × 24 cases, en six modes : classique (les bords tuent), sans bords, labyrinthe à quatre plateaux, mue (la queue se change en pierre tous les 5 fruits), chrono 60 secondes où rien ne tue, et vergers, où dix fruits donnent chacun leur vitesse et leurs points. Étoiles bonus, record par mode et statistiques synchronisés. Nouveau style pixel art : serpent dessiné avec sa tête, ses yeux et sa langue, fruits et murs dessinés, panneau des records, bouton plein écran.",
   "icon": "icon.png",
