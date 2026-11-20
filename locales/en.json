@@ -21,7 +21,6 @@
  "Fruits mangés": "Fruits eaten",
  "Kiwi": "Kiwi",
  "Labyrinthe": "Labyrinth",
- "Le jeu du serpent sur 24 × 24 cases, en six modes : classique (les bords tuent), sans bords, labyrinthe à quatre plateaux, mue (la queue se change en pierre tous les 5 fruits), chrono 60 secondes où rien ne tue, et vergers, où dix fruits donnent chacun leur vitesse et leurs points. Étoiles bonus, record par mode et statistiques synchronisés. Nouveau style pixel art : serpent dessiné avec sa tête, ses yeux et sa langue, fruits et murs dessinés, panneau des records, bouton plein écran.": "The snake game on a 24 × 24 board, in six modes: classic (the edges kill), no walls, a four-board maze, moult (the tail turns to stone every 5 fruits), a 60-second time attack where nothing kills, and orchards, where ten fruits each set their own speed and points. Bonus stars, a record per mode and synced statistics. New pixel art style: the snake is drawn with its head, eyes and tongue, drawn fruits and walls, a records panel, a full screen button.",
  "Mode": "Mode",
  "Mode de jeu": "Game mode",
  "Mue": "Molting",
@@ -41,7 +40,6 @@
  "RECORDS": "RECORDS",
  "Raisin": "Grapes",
  "Records :": "Records:",
- "Records par mode et statistiques.": "Records per mode and statistics.",
  "SCORE": "SCORE",
  "SNUKE": "SNUKE",
  "Sans bords": "Without edges",
@@ -107,5 +105,7 @@
  "KBBBBBK": "KBBBBBK",
  "KDDDDDK": "KDDDDDK",
  "KDDDDDDK": "KDDDDDDK",
- "KDDHHDDK": "KDDHHDDK"
+ "KDDHHDDK": "KDDHHDDK",
+ "Rien n'est synchronisé : tes records restent sur cet appareil.": "Nothing is synced: your records stay on this device.",
+ "Le jeu du serpent sur 24 × 24 cases, en six modes : classique (les bords tuent), sans bords, labyrinthe à quatre plateaux, mue (la queue se change en pierre tous les 5 fruits), chrono 60 secondes où rien ne tue, et vergers, où dix fruits donnent chacun leur vitesse et leurs points. Étoiles bonus, record par mode et statistiques. Nouveau style pixel art : serpent dessiné avec sa tête, ses yeux et sa langue, fruits et murs dessinés, panneau des records, bouton plein écran.": "The snake game on a 24 × 24 board, in six modes: classic (the edges kill), no walls, a four-board maze, moult (the tail turns to stone every 5 fruits), a 60-second time attack where nothing kills, and orchards, where ten fruits each set their own speed and points. Bonus stars, a record per mode and statistics. New pixel art style: the snake is drawn with its head, eyes and tongue, drawn fruits and walls, a records panel, a full screen button."
 }
