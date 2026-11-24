@@ -4,6 +4,10 @@ Le jeu du serpent sur un plateau de 24 × 24 cases, avec six modes : classique, 
 
 *English version: [README.en.md](README.en.md)*
 
+## Apparences (nouveau en 1.4.0)
+
+Huit apparences de serpent se gagnent en jouant : Prairie (dès le début), Corail (100 fruits en tout), Python doré (25 cases de long), Glace (20 parties), Lave (150 points en Classique), Néon (500 fruits), Galaxie (50 cases de long) et Arc-en-ciel (jouer aux six modes). On choisit la sienne sous les records ; une apparence encore fermée dit ce qu'il reste à faire.
+
 ## Commandes
 
 - **Flèches** ou **ZQSD**, ou **glisser à la souris** : tourner.

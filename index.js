@@ -8,10 +8,15 @@ const HTML = `<div class="appWrap wide">
       <label class="row">Mode <select class="f gSel" id="snMode" title="Mode de jeu"></select></label>
       <div class="row"><button class="btn main" id="snNew">NOUVELLE PARTIE</button><button class="btn" id="snFs">PLEIN ÉCRAN</button></div>
       <div class="snLegend" id="snLegend" style="display:none"></div>
+      <div class="sysCard"><b>APPARENCES</b><div class="snSkins" id="snSkins"></div></div>
       <div class="hint">Flèches, ZQSD ou glisser à la souris : tourner · P ou Échap : pause · espace : rejouer. Chaque fruit allonge le serpent et le fait aller plus vite ; une étoile apparaît tous les 7 fruits (50 points, elle ne reste pas longtemps). Classique : les bords tuent · Sans bords : on ressort de l'autre côté · Labyrinthe : 4 plateaux murés, le suivant tous les 10 fruits · Mue : tous les 5 fruits la queue se change en pierre et le serpent repart court · Chrono : 60 secondes, rien ne tue, se mordre coupe la queue · Vergers : trois fruits sur le plateau, dix espèces ; la vitesse du serpent est celle du dernier fruit mangé (piment fulgurant, myrtille tranquille), et les fruits lents rapportent moins. Records et statistiques sauvegardés et synchronisés.</div>
     </div></div>
 </div>`;
-const CSS = `.gMain{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+const CSS = `.snSkins{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.snSkins button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px;font-size:12px;line-height:1.2;min-width:0}
+.snSkins canvas{width:105px;max-width:100%;height:21px;image-rendering:pixelated}.snSkins em{font-style:normal;font-size:11px;opacity:.8}
+.pxk.pxk .snSkins .btn .pxV{white-space:normal;text-align:center}
+.gMain{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
 .gameBox{display:grid;place-items:center;padding:10px;background:#05010b;flex:0 1 auto;min-width:min(100%,280px);position:relative}
 .gameBox:fullscreen{padding:0}
 .gameBox:fullscreen canvas{height:100vh;width:auto;max-width:100vw}
@@ -436,11 +441,33 @@ function snOver() {
   if (sn.mode === 'over') return;
   sn.mode = 'over'; sfx('error');
   const s = snSave(); s.games++; s.fruits += sn.eaten; s.longest = Math.max(s.longest, sn.body.length);
+  const before = SN_SKINS.filter(snSkinOk).length;
   sn.record = sn.score > 0 && best('snake_' + sn.kind, sn.score); saveGames(); snInfo();  // un score nul n'est jamais un record
+  const now = SN_SKINS.filter(snSkinOk); if (now.length > before) { sn.unlock = now.at(-1).name; toast('Nouvelle apparence : ' + sn.unlock); }
 }
 /* ---------- le dessin : un pré en damier, des haies, le serpent avec sa tête, ses yeux et sa queue effilée ---------- */
 const SN_STAR = ['....y....', '...yhy...', 'yyyhwhyyy', '.yhwwwhy.', '..yhwhy..', '.yhy.yhy.', 'yy.....yy'];
-const SN_BODY = ['#9af05a', '#86e04c'], SN_DOT = '#3a8a2a', SN_HI = '#e0ffb0', SN_OUT = '#0a1e0c';
+let SN_BODY = ['#9af05a', '#86e04c'], SN_DOT = '#3a8a2a', SN_HI = '#e0ffb0', SN_OUT = '#0a1e0c';
+// les apparences : couleurs du corps, écailles, reflet, contour, tête, et un motif ; gagnées en jouant
+const SN_SKINS = [
+  {id: 'prairie', name: 'Prairie', body: ['#9af05a', '#86e04c'], dot: '#3a8a2a', hi: '#e0ffb0', out: '#0a1e0c', head: '#a8f86a'},
+  {id: 'corail', name: 'Corail', need: ['fruits', 100], body: ['#ff5a4a', '#ff5a4a'], dot: '#a8201a', hi: '#ffd0c0', out: '#1a0606', head: '#ff6a5a', bands: ['#1a1a1a', '#ffe27a']},
+  {id: 'python', name: 'Python doré', need: ['longest', 25], body: ['#e8c050', '#d8a838'], dot: '#6a4010', hi: '#fff0b0', out: '#2a1a06', head: '#f0d060', blot: '#8a5a1a'},
+  {id: 'glace', name: 'Glace', need: ['games', 20], body: ['#bff4ff', '#9ae0f4'], dot: '#4a9ac8', hi: '#ffffff', out: '#0a2a3a', head: '#d8faff'},
+  {id: 'lave', name: 'Lave', need: ['classique', 150], body: ['#2a1a1a', '#3a2020'], dot: '#ff6a1a', hi: '#ff9a3a', out: '#0a0404', head: '#3a2424', glow: true},
+  {id: 'neon', name: 'Néon', need: ['fruits', 500], body: ['#ff4fd8', '#3ae0ff'], dot: '#ffffff', hi: '#ffffff', out: '#14041e', head: '#ff8ae8'},
+  {id: 'galaxie', name: 'Galaxie', need: ['longest', 50], body: ['#3a1a6a', '#2a1258'], dot: '#a888ff', hi: '#ffffff', out: '#08041a', head: '#4a2a80', stars: true},
+  {id: 'arc', name: 'Arc-en-ciel', need: ['modes', 6], body: ['#ff5a5a', '#ffd84a'], dot: '#ffffff', hi: '#ffffff', out: '#14041e', head: '#ffffff', rainbow: true}];
+const SN_NEED_TXT = {fruits: 'fruits en tout', longest: 'cases de long', games: 'parties', classique: 'points en Classique', modes: 'modes joués'};
+const snNeedVal = k => { const s = snSave(); return k.need[0] === 'fruits' ? s.fruits : k.need[0] === 'longest' ? s.longest : k.need[0] === 'games' ? s.games : k.need[0] === 'classique' ? games?.best.snake_classique ?? 0 : Object.keys(SN.kinds).filter(m => (games?.best['snake_' + m] ?? 0) > 0).length; };
+const snSkinOk = k => !k.need || snNeedVal(k) >= k.need[1];
+const snSkin = () => { const k = SN_SKINS.find(k => k.id === snSave().skin) || SN_SKINS[0]; return snSkinOk(k) ? k : SN_SKINS[0]; };
+function snSegCol(k, i, t) {  // la couleur d'un anneau du corps selon le motif
+  if (k.rainbow) return `hsl(${(i * 28 + t * 3) % 360},85%,62%)`;
+  if (k.bands) return i % 4 === 1 ? k.bands[0] : i % 4 === 3 ? k.bands[1] : k.body[0];
+  if (k.blot && i % 5 < 2) return k.blot;
+  return k.body[i % 2];
+}
 function snDraw() {
   const g = sn.g, C = SN.C, T = SN.TOP, t = sn.tick, N = SN.N, wrap = sn.kind === 'tore' || sn.kind === 'chrono';
   px(g, '#0c0a12', 0, 0, SN.W, T);
@@ -462,17 +489,17 @@ function snDraw() {
   for (const f of sn.fruits || []) { px(g, 'rgba(0,0,0,.35)', f.x * C + 2, T + f.y * C + 9, 6, 1); snFruitArt(g, f.x * C, T + f.y * C - bob, f.t); }
   if (sn.star && (sn.starT > 90 || (t >> 3) % 2)) sprite(g, SN_STAR, sn.star[0] * C, T + sn.star[1] * C + 1, {y: '#ffd07a', h: '#ffe9b0', w: '#ffffff'});
   // le serpent : un corps continu (chaque paire de cases voisines est reliée), plus fin vers la queue, des écailles, puis la tête
-  const b = sn.body, n = b.length, flash = sn.cut && (t >> 2) % 2;
+  const b = sn.body, n = b.length, flash = sn.cut && (t >> 2) % 2, K = snSkin(); SN_DOT = K.dot; SN_HI = K.hi; SN_OUT = K.out;
   { const X = b[0][0] * C, Y = T + b[0][1] * C; px(g, SN_OUT, X - 1, Y + 1, C + 2, C - 2); px(g, SN_OUT, X + 1, Y - 1, C - 2, C + 2); px(g, SN_OUT, X, Y, C, C); }  // le contour de la tête avant le corps, qui s'y raccorde
   for (const pass of [0, 1]) for (let i = n - 1; i >= 1; i--) {  // passe 0 : le contour sombre, un pixel plus large ; passe 1 : le corps
-    const [x1, y1] = b[i], [x0, y0] = b[i - 1], m = (i === n - 1 ? 2 : 1) - (pass ? 0 : 1), col = pass ? (flash ? '#ffffff' : SN_BODY[i % 2]) : SN_OUT;
+    const [x1, y1] = b[i], [x0, y0] = b[i - 1], m = (i === n - 1 ? 2 : 1) - (pass ? 0 : 1), col = pass ? (flash ? '#ffffff' : snSegCol(K, i, t)) : SN_OUT;
     px(g, col, x1 * C + m, T + y1 * C + m, C - 2 * m, C - 2 * m);
     if (Math.abs(x1 - x0) + Math.abs(y1 - y0) === 1) px(g, col, Math.min(x0, x1) * C + m, T + Math.min(y0, y1) * C + m, (x0 !== x1 ? 2 * C : C) - 2 * m, (y0 !== y1 ? 2 * C : C) - 2 * m);
   }
   for (let i = 1; i < n; i++) { const X = b[i][0] * C, Y = T + b[i][1] * C;
     if (i === n - 1) { px(g, SN_DOT, X + 4, Y + 4, 2, 2); continue; }
-    if (!flash) { px(g, i % 2 ? SN_DOT : '#3aa040', X + 4, Y + 4, 2, 2); px(g, SN_HI, X + 2, Y + 2, 1, 1); } }
-  const [hx, hy] = b[0], X = hx * C, Y = T + hy * C, [dx, dy] = sn.dir, hc = flash ? '#ffffff' : '#a8f86a';
+    if (!flash) { px(g, K.glow ? ((t >> 3) + i) % 3 ? '#ff6a1a' : '#ffd040' : K.stars ? ((t >> 4) + i * 7) % 9 ? SN_DOT : '#ffffff' : i % 2 || K.id !== 'prairie' ? SN_DOT : '#3aa040', X + 4, Y + 4, 2, 2); px(g, SN_HI, X + 2, Y + 2, 1, 1); if (K.stars && (i * 5 + (t >> 5)) % 7 === 0) px(g, '#ffffff', X + 6, Y + 6, 1, 1); } }
+  const [hx, hy] = b[0], X = hx * C, Y = T + hy * C, [dx, dy] = sn.dir, hc = flash ? '#ffffff' : K.rainbow ? snSegCol(K, 0, t) : K.head;
   
   px(g, hc, X + 1, Y + 1, C - 2, C - 2); px(g, SN_HI, X + 2, Y + 1, 3, 1);
   const eyes = dx ? [[dx > 0 ? 5 : 2, 1], [dx > 0 ? 5 : 2, 6]] : [[1, dy > 0 ? 5 : 2], [6, dy > 0 ? 5 : 2]];
@@ -488,7 +515,7 @@ function snDraw() {
   if (sn.kind === 'verger') { const k = (13 - sn.fspd) / 10; px(g, '#05010b', 4, 19, 232, 4); px(g, k > .7 ? '#ff4f6d' : k > .45 ? '#ffd07a' : '#7fe0ee', 5, 20, Math.round(230 * k), 2); }
   if (sn.mode === 'ready') gameText(g, SN.W, [['SNUKE', '#7ee07a', 16], [SN.kinds[sn.kind], '#ffd84a', 8], ['Une flèche pour partir', '#ffffff', 8]], 100);
   if (sn.mode === 'pause') gameText(g, SN.W, [['PAUSE', '#ffd84a', 16], ['Une flèche pour reprendre', '#d9c6ff', 8]], 110);
-  if (sn.mode === 'over') gameText(g, SN.W, [[sn.kind === 'chrono' ? 'TEMPS ÉCOULÉ' : 'PERDU', '#ff4f6d', 16], [sn.score + ' points' + (sn.record ? ' · record !' : ''), '#ffd84a', 8], [sn.eaten + ' fruits · taille ' + n, '#d9c6ff', 8], ['Espace : rejouer', '#ffffff', 8]], 92);
+  if (sn.mode === 'over') gameText(g, SN.W, [[sn.kind === 'chrono' ? 'TEMPS ÉCOULÉ' : 'PERDU', '#ff4f6d', 16], [sn.score + ' points' + (sn.record ? ' · record !' : ''), '#ffd84a', 8], [sn.eaten + ' fruits · taille ' + n, '#d9c6ff', 8], ...(sn.unlock ? [['Apparence : ' + sn.unlock, '#ff8ae8', 8]] : []), ['Espace : rejouer', '#ffffff', 8]], 92);
 }
 /* ---------- input and page ---------- */
 const SN_DIRS = {ArrowLeft: [-1, 0], q: [-1, 0], a: [-1, 0], ArrowRight: [1, 0], d: [1, 0], ArrowUp: [0, -1], z: [0, -1], w: [0, -1], ArrowDown: [0, 1], s: [0, 1]};
@@ -521,6 +548,14 @@ function snLegend() {  // les dix fruits, leur vitesse et leurs points
 function snInfo() {  // le panneau des records : chaque mode, puis les parties, les fruits et le plus long serpent
   const s = snSave(), rows = [...Object.entries(SN.kinds).map(([k, v]) => [v, games?.best['snake_' + k] ?? 0]), ['Parties', s.games], ['Fruits mangés', s.fruits], ['Plus long', s.longest]];
   $('snStats').replaceChildren(...rows.flatMap(([k, v]) => [el('span', '', k), el('b', '', String(v))]));
+  $('snSkins').replaceChildren(...SN_SKINS.map(K => {  // un petit serpent pour chaque apparence ; fermée, elle dit ce qu'il reste à faire
+    const ok = snSkinOk(K), cv = el('canvas'), g = cv.getContext('2d'); cv.width = 35; cv.height = 7;
+    for (let i = 0; i < 5; i++) { px(g, ok ? K.out : '#1a1626', i * 7, 0, 7, 7); px(g, ok ? (i === 4 ? K.head : snSegCol(K, 4 - i, 0)) : '#3a3448', i * 7 + (i ? 0 : 1), 1, i ? 7 : 6, 5); if (ok && i < 4) px(g, K.dot, i * 7 + 3, 3, 1, 1); }
+    if (ok) { px(g, '#ffffff', 31, 2, 2, 2); px(g, '#130a20', 32, 2, 1, 1); }
+    const b = el('button', 'btn' + (snSkin().id === K.id ? ' main' : '')); b.disabled = !ok;
+    b.append(cv, el('span', '', K.name), el('em', '', ok ? (snSkin().id === K.id ? 'portée' : 'à toi') : Math.min(snNeedVal(K), K.need[1]) + ' / ' + K.need[1] + ' ' + SN_NEED_TXT[K.need[0]]));
+    b.onclick = () => { snSave().skin = K.id; saveGames(); snInfo(); b.blur(); }; return b;
+  }));
 }
 function snOpen() {
   if (!$('snMode').options.length) $('snMode').replaceChildren(...Object.entries(SN.kinds).map(([k, v]) => Object.assign(el('option', '', v), {value: k})));
@@ -531,7 +566,7 @@ snLegend();
 $('snMode').onchange = () => { snStart($('snMode').value); saveGames(); $('snMode').blur(); };
 $('snNew').onclick = () => { snStart(sn?.kind); $('snNew').blur(); };
 $('snFs').onclick = () => { $('snFs').blur(); try { document.fullscreenElement ? document.exitFullscreen() : $('snCanvas').parentElement.requestFullscreen?.().catch(() => {}); } catch {} };
-$('snCanvas').__sn = {st: () => sn, start: k => snStart(k), turn: d => snTurn(d), step: () => snStep(), star: () => { sn.star = snFree(); sn.starT = 300; }};  // pour le test « local »
+$('snCanvas').__sn = {save: () => snSave(), info: () => snInfo(), st: () => sn, start: k => snStart(k), turn: d => snTurn(d), step: () => snStep(), star: () => { sn.star = snFree(); sn.starT = 300; }};  // pour le test « local »
 {  // self-check: eating grows by one, a U-turn is refused, Chrono cuts the tail instead of killing, Mue turns the tail to stone
   const keep = sn, real = {snFruit, snOver}; let over = 0; snFruit = () => { sn.fruit = null; }; snOver = () => over++;
   try {
@@ -544,7 +579,9 @@ $('snCanvas').__sn = {st: () => sn, start: k => snStart(k), turn: d => snTurn(d)
     sn.kind = 'verger'; sn.body = [[5, 5], [4, 5], [3, 5]]; sn.dir = [1, 0]; sn.eaten = 0; sn.score = 0; sn.grow = 0; sn.fspd = 6; sn.fruit = null; sn.fruits = [{x: 6, y: 5, t: SN_FRUITS[0]}, {x: 9, y: 9, t: SN_FRUITS[8]}];
     snStep(); const pepper = sn.fspd === 3 && sn.score === 50 && sn.body.length === 4 && sn.fruits.length === 1;  // le piment : vitesse 3, 50 points
     sn.fruits.push({x: 7, y: 5, t: SN_FRUITS[8]}); snStep(); const melon = sn.fspd === 10 && sn.grow === 3 && sn.body.length === 5; snStep(); snStep(); const grows = sn.body.length === 7 && sn.grow === 1;  // la pastèque : lente, la queue grandit de 4
-    const g0 = document.createElement('canvas').getContext('2d'); sn = {...sn, g: g0, tick: 8, mode: 'over', star: [3, 3], starT: 300, cut: 0}; snDraw(); sn.mode = 'play'; snDraw();  // le dessin, étoile comprise, ne plante pas
+    const g0 = document.createElement('canvas').getContext('2d'); sn = {...sn, g: g0, tick: 8, mode: 'over', star: [3, 3], starT: 300, cut: 0}; snDraw(); sn.mode = 'play'; snDraw();
+    const sv = snSave(), keepSkin = sv.skin, keepF = sv.fruits; sv.skin = 'neon'; sv.fruits = 0; const locked = snSkin().id === 'prairie'; sv.fruits = 999; const open = snSkin().id === 'neon';
+    for (const K of SN_SKINS) { sv.skin = K.id; sv.fruits = 999; snDraw(); } sv.skin = keepSkin; sv.fruits = keepF; if (!locked || !open) throw new Error('apparences ' + locked + ' ' + open);  // le dessin, étoile comprise, ne plante pas
     console.assert(grew && noU && died && cut && stone && pepper && melon && grows && SN_FRUITS.length === 10 && new Set(SN_FRUITS.map(f => f.k)).size === 10, 'snake moves', {grew, noU, died, cut, stone, pepper, melon, grows});
   } finally { ({snFruit, snOver} = real); sn = keep; }
 }  // (non indenté : les textes sur plusieurs lignes restent exactement les tiens)

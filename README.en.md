@@ -4,6 +4,10 @@ The snake game on a 24 × 24 board, with six modes: classic, no walls, maze, mou
 
 *Version française : [README.md](README.md)*
 
+## Skins (new in 1.4.0)
+
+Eight snake skins are earned by playing: Meadow (from the start), Coral (100 fruits in total), Golden python (25 tiles long), Ice (20 games), Lava (150 points in Classic), Neon (500 fruits), Galaxy (50 tiles long) and Rainbow (play all six modes). Pick yours under the records; a locked skin shows what is left to do.
+
 ## Controls
 
 - **Arrow keys** or **WASD/ZQSD**, or **drag with the mouse**: turn.

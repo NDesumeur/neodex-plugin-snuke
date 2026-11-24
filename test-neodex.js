@@ -20,6 +20,13 @@ module.exports = async ({ pj, sleep }) => {
   await shot('4-perdu');
   const parts = await pj(`(() => { const st = [...document.querySelectorAll('#snStats span')], i = st.findIndex(e => e.textContent === 'Parties'); return +st[i].nextElementSibling.textContent; })()`);
   if (!(parts >= 1)) throw new Error('la partie perdue devait être comptée : ' + parts);
+  // une apparence ouverte se porte d'un clic ; une fermée reste grisée
+  await S(`const v = T.save(); window.__kf = v.fruits; window.__ks = v.skin; v.fruits = 120; T.info(); return 0;`); await sleep(100);
+  const sk = await pj(`(() => { const b = [...document.querySelectorAll('#snSkins button')]; b[1].click(); return [b.length, b[5].disabled]; })()`); await sleep(100);
+  await S(`T.start('classique'); T.st().mode = 'play'; return 0;`); await sleep(300); await shot('5-corail');
+  const worn = await S(`return T.save().skin;`);
+  if (sk[0] !== 8 || !sk[1] || worn !== 'corail') throw new Error('apparences : ' + JSON.stringify(sk) + ' ' + worn);
+  await S(`const v = T.save(); v.fruits = __kf; v.skin = __ks; T.info(); return 0;`);
   await pj(`document.getElementById('snFs').click(), 0`); await sleep(700);
   const fs = await pj(`(() => { const c = document.getElementById('snCanvas'), r = c.getBoundingClientRect(); return document.fullscreenElement === c.parentElement && (Math.abs(r.height - innerHeight) < 3 || Math.abs(r.width - innerWidth) < 3); })()`);
   await pj(`document.fullscreenElement && document.exitFullscreen(), 0`); await sleep(300);
@@ -27,5 +34,5 @@ module.exports = async ({ pj, sleep }) => {
   const L = await pj(`(() => { const r = document.getElementById('snCanvas').getBoundingClientRect(); let s = 0; for (let e = document.getElementById('snCanvas').parentElement; e; e = e.parentElement) s += e.scrollTop; return { bottom: Math.round(r.bottom + s), h: Math.round(r.height), wh: innerHeight, ww: innerWidth, sw: document.documentElement.scrollWidth }; })()`);
   if (L.bottom > L.wh + 1 || L.sw > L.ww + 1 || L.h < 300) throw new Error('le jeu dépasse la fenêtre ou reste petit : ' + JSON.stringify(L));
   const errs = await pj(`window.__e.join(' | ')`); if (errs) throw new Error('erreur : ' + errs);
-  return 'partie, étoile, Vergers, labyrinthe, fin, plein écran · ' + L.h + ' px dans ' + L.ww + '×' + L.wh;
+  return 'partie, étoile, Vergers, labyrinthe, fin, apparence Corail portée, plein écran · ' + L.h + ' px dans ' + L.ww + '×' + L.wh;
 };
