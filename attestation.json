@@ -1,9 +1,9 @@
 {
   "pluginId": "neodex.snuke",
   "repo": "NDesumeur/neodex-plugin-snuke",
-  "version": "1.3.2",
-  "sha256": "11a22fc361e104113d931f5e81e76ea3b59b03ac01384223d611a0260cbf51be",
-  "approvedAt": "2026-11-20T01:51:13.080Z",
+  "version": "1.4.0",
+  "sha256": "60d84a08162aa81297c44264b85b041c3de7cd1c620ea5beedf407d9ba490cd9",
+  "approvedAt": "2026-11-24T15:56:16.463Z",
   "neobase": ">=4.0.0",
-  "signature": "EbQrXJs7IaMidBecOJSUcWTL7FnNr2bgSdSwl7HwrkTNV/m6edtYk6XL+yZ7ImBROLI2odlHAA6bTyZA6QVqBQ=="
+  "signature": "EyBlWr7ghtgmlk42dAT/I7O5KK0PCbjuTyPrwSz519zC1s/h90WHuimVUydH+7jcyEWluLP52Uo5yrrinjUzDA=="
 }
