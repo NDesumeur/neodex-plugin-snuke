@@ -314,6 +314,9 @@ export default async function (ctx) {
   const saveGames = () => { clearTimeout(gamesTimer); gamesTimer = setTimeout(() => { gamesTimer = null; folder.write('games', games).catch(() => {}); }, 500); };
   const best = (k, v, higher = true) => { const b = games.best[k]; if (b == null || (higher ? v > b : v < b)) { games.best[k] = v; saveGames(); return true; } return false; };
   const gstore = (k, init) => (games[k] ??= init);  // la section d'un jeu
+  // les trophées de NeoDex (3.4.8 et plus) : succès et records déclarés dans plugin.json ; sur un NeoDex plus ancien, rien ne se passe
+  const trophy = id => { ctx.games?.unlock(id).catch(() => {}); };
+  const trophyRecord = (id, v) => { if (v != null && Number.isFinite(+v)) ctx.games?.record(id, +v).catch(() => {}); };
 function gameLoop(st, appKey, update, draw) {
   cancelAnimationFrame(st.raf);
   const STEP = 1000 / 60; let acc = 0, last = performance.now();
@@ -442,7 +445,7 @@ function snOver() {
   sn.mode = 'over'; sfx('error');
   const s = snSave(); s.games++; s.fruits += sn.eaten; s.longest = Math.max(s.longest, sn.body.length);
   const before = SN_SKINS.filter(snSkinOk).length;
-  sn.record = sn.score > 0 && best('snake_' + sn.kind, sn.score); saveGames(); snInfo();  // un score nul n'est jamais un record
+  sn.record = sn.score > 0 && best('snake_' + sn.kind, sn.score); saveGames(); snInfo(); snTrophies();  // un score nul n'est jamais un record
   const now = SN_SKINS.filter(snSkinOk); if (now.length > before) { sn.unlock = now.at(-1).name; toast('Nouvelle apparence : ' + sn.unlock); }
 }
 /* ---------- le dessin : un pré en damier, des haies, le serpent avec sa tête, ses yeux et sa queue effilée ---------- */
@@ -586,5 +589,15 @@ $('snCanvas').__sn = {save: () => snSave(), info: () => snInfo(), st: () => sn, 
   } finally { ({snFruit, snOver} = real); sn = keep; }
 }  // (non indenté : les textes sur plusieurs lignes restent exactement les tiens)
   // ---- fin ----
-  ctx.onOpen(() => { snOpen(); });
+  // les trophées, tirés des statistiques et des records gardés (aussi à l'ouverture : ce qui a été fait avant compte)
+  function snTrophies() {
+    const s = snSave(), b = games.best;
+    for (const k of Object.keys(SN.kinds)) trophyRecord(k, b['snake_' + k]);
+    trophyRecord('longueur', s.longest || null);
+    if (s.games >= 1) trophy('premier'); if (s.fruits >= 100) trophy('cent'); if (s.fruits >= 500) trophy('cinq-cents');
+    if (s.longest >= 25) trophy('long25'); if (s.longest >= 50) trophy('long50');
+    if (b.snake_classique >= 50) trophy('classique50'); if (b.snake_classique >= 150) trophy('classique150');
+    if (snSkinOk(SN_SKINS.find(k => k.id === 'arc'))) trophy('modes'); if (SN_SKINS.every(snSkinOk)) trophy('apparences');
+  }
+  ctx.onOpen(() => { snOpen(); snTrophies(); });
 }

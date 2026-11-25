@@ -1,7 +1,7 @@
 {
   "id": "neodex.snuke",
   "name": "Snuke",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "author": "NDesumeur",
   "description": "Le jeu du serpent sur 24 × 24 cases, en six modes : classique (les bords tuent), sans bords, labyrinthe à quatre plateaux, mue (la queue se change en pierre tous les 5 fruits), chrono 60 secondes où rien ne tue, et vergers, où dix fruits donnent chacun leur vitesse et leurs points. Étoiles bonus, record par mode et statistiques. Nouveau style pixel art : serpent dessiné avec sa tête, ses yeux et sa langue, fruits et murs dessinés, panneau des records, bouton plein écran. Huit apparences de serpent à gagner en jouant.",
   "icon": "icon.png",
@@ -22,5 +22,98 @@
   "sdk": "2.1.0",
   "permissions": [
     "storage"
+  ],
+  "succes": [
+    {
+      "id": "premier",
+      "nom": "Premier repas",
+      "texte": "Terminer une première partie"
+    },
+    {
+      "id": "cent",
+      "nom": "Gourmand",
+      "texte": "Manger 100 fruits en tout"
+    },
+    {
+      "id": "cinq-cents",
+      "nom": "Insatiable",
+      "texte": "Manger 500 fruits en tout"
+    },
+    {
+      "id": "long25",
+      "nom": "Bien nourri",
+      "texte": "Atteindre 25 cases de long"
+    },
+    {
+      "id": "long50",
+      "nom": "Serpent de mer",
+      "texte": "Atteindre 50 cases de long"
+    },
+    {
+      "id": "classique50",
+      "nom": "Bon appétit",
+      "texte": "Marquer 50 points en Classique"
+    },
+    {
+      "id": "classique150",
+      "nom": "Roi du pré",
+      "texte": "Marquer 150 points en Classique"
+    },
+    {
+      "id": "modes",
+      "nom": "Touche-à-tout",
+      "texte": "Jouer aux 6 modes"
+    },
+    {
+      "id": "apparences",
+      "nom": "Mue complète",
+      "texte": "Débloquer toutes les apparences",
+      "cache": true
+    }
+  ],
+  "records": [
+    {
+      "id": "classique",
+      "nom": "Classique",
+      "sens": "haut",
+      "format": "nombre"
+    },
+    {
+      "id": "tore",
+      "nom": "Sans bords",
+      "sens": "haut",
+      "format": "nombre"
+    },
+    {
+      "id": "labyrinthe",
+      "nom": "Labyrinthe",
+      "sens": "haut",
+      "format": "nombre"
+    },
+    {
+      "id": "mue",
+      "nom": "Mue",
+      "sens": "haut",
+      "format": "nombre"
+    },
+    {
+      "id": "chrono",
+      "nom": "Chrono 60 s",
+      "sens": "haut",
+      "format": "nombre"
+    },
+    {
+      "id": "verger",
+      "nom": "Vergers",
+      "sens": "haut",
+      "format": "nombre"
+    },
+    {
+      "id": "longueur",
+      "nom": "Plus grande longueur",
+      "sens": "haut",
+      "format": "nombre",
+      "unite": "cases"
+    }
   ]
 }
